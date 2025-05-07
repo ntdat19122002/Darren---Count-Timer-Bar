@@ -1,0 +1,106 @@
+@import 'reuse.css';
+@import "custom_antdv.css";
+@import "custom_polaris_vue.css";
+
+body {
+    font-family: "Be Vietnam Pro", sans-serif !important;
+    background: var(--body-background-color);
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    width: 75%;
+}
+
+.page-title {
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 650;
+    line-height: 24px; /* 120% */
+    letter-spacing: -0.2px;
+    margin: 24px 0;
+}
+
+/* Section */
+.section {
+    background: #FFFFFF;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 1px 0px 0px 0px rgba(0, 0, 0, 0.13) inset, -1px 0px 0px 0px rgba(0, 0, 0, 0.13) inset, 0px -1px 0px 0px rgba(0, 0, 0, 0.17) inset, 0px 1px 0px 0px rgba(204, 204, 204, 0.50) inset, 0px 1px 0px 0px rgba(26, 26, 26, 0.07);
+}
+
+.section-title {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 650;
+    line-height: 20px;
+}
+
+.section-subtitle {
+    color: #616161;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 450;
+    line-height: 20px;
+    margin-top: 8px;
+}
+
+/* Button */
+.connect-button {
+    display: flex;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    background: #1C1C1E;
+    margin-top: 16px;
+    cursor: pointer;
+
+    color: #FDFDFD;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+}
+
+/*Setting*/
+.setting-section {
+    display: flex;
+}
+
+.setting-section-title {
+    width: 306px;
+    margin-right: 16px;
+}
+
+.setting-section-container {
+    width: 628px;
+}
+
+@media screen and (max-width: 1200px)  {
+    .content{
+        width: 756px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .content{
+        width: 90%;
+    }
+
+    .setting-section {
+        display: flow;
+    }
+
+    .setting-section-title {
+        margin-bottom: 16px;
+    }
+
+    .setting-section-container {
+        width: 100%;
+    }
+}
