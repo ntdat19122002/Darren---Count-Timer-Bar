@@ -3,11 +3,11 @@
         <div class="space-between">
             <div class="align-center">
                 <div>
-                    Countdown timers
+                    {{ title }}
                 </div>
             </div>
             <div class="flex">
-                <Button
+                <Button v-if="button"
                     variant="primary"
                 >
                     + Add pixel
@@ -21,6 +21,7 @@
 import {Button, TextField} from '@ownego/polaris-vue'
 
 export default {
+    props:['title'],
     components:{Button}
 }
 </script>

@@ -55,6 +55,10 @@
 }
 
 /* Margin */
+.mb-4{
+    margin-bottom: 4px;
+}
+
 .mt-8{
     margin-top: 8px;
 }
