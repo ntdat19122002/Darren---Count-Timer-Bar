@@ -1,46 +1,118 @@
 <template>
   <Header title="Countdown timer"></Header>
   <div class="flex countdown">
-    <Card class="left">
-      <TextField class="mb-16" label="Countdown title" v-model="countdown_timer_setting.title" />
-      <TextField class="mb-16" label="Subtitle" v-model="countdown_timer_setting.subtitle" />
-      
-      <div class="input-title mb-4">End time</div>
-      <DatePicker show-time v-model:value="countdown_timer_setting.endTime"></DatePicker>
-    </Card>
+    <div class="left">
+      <Card class="mb-16">
+        <TextField class="mb-16" label="Countdown title" v-model="countdownTimerSetting.title" />
+        <TextField class="mb-16" label="Subtitle" v-model="countdownTimerSetting.subtitle" />
+
+        <div class="input-title mb-4">End time</div>
+        <DatePicker show-time v-model:value="countdownTimerSetting.endTime"></DatePicker>
+      </Card>
+      <FooterButton
+        :disabled="!isChange"
+      />
+    </div>
+
     <Card class="right">
       <img src="../assets/img/productReview.png" alt="">
       <div class="countdown-timer-block">
         <div class="ct-title">
-          {{ countdown_timer_setting.title }}
+          {{ countdownTimerSetting.title }}
         </div>
-        <div class="ct-title">
-          {{ countdown_timer_setting.subtitle }}
+        <div class="ct-subtitle">
+          {{ countdownTimerSetting.subtitle }}
         </div>
-        <div class="ct-title">
-          {{ countdown_timer_setting.title }}
+        <div class="ct-countdown">
+          {{ formattedTime }}
         </div>
       </div>
+
     </Card>
   </div>
+  <ui-save-bar id="edit-countdown">
+    <button variant="primary" id="save-button" @click="saveCountdownSetting"></button>
+    <button @click="discardCountdownSetting" id="discard-button"></button>
+  </ui-save-bar>
 </template>
 
 <script>
 import { DatePicker } from 'ant-design-vue';
-import Header from '../components/header/Header.vue'
+import Header from '../components/Header/Header.vue'
 import { Card } from '@ownego/polaris-vue';
+import FooterButton from '@/components/Button/FooterButton.vue';
+import axiosInApp from '@/axios';
+
 export default {
-  components: { Card, Header, DatePicker },
+  components: { Card, Header, DatePicker, FooterButton},
   data() {
     return {
-      countdown_timer_setting: {
+      countdownTimerSetting: {
         name: 'Countdown 1',
-        title: 'Hurry up!',
-        subtitle: 'Sale ends in',
+        title: '🔥Hurry up🔥',
+        subtitle: 'Out of stock in:',
         endTime: ''
+      },
+      countdownTimerSettingOrigin: {
+        name: 'Countdown 1',
+        title: '🔥Hurry up🔥',
+        subtitle: 'Out of stock in:',
+        endTime: ''
+      },
+      timeLeft: 0,
+      intervalId: null
+    }
+  },
+  computed: {
+    formattedTime() {
+      const total = Math.max(this.timeLeft, 0)
+      const days = Math.floor(total / (3600 * 24))
+      const hours = String(Math.floor(total / (3600 * 24))).padStart(2, '0')
+      const minutes = String(Math.floor((total % 3600) / 60)).padStart(2, '0')
+      const seconds = String(total % 60).padStart(2, '0')
+      return `${days}d:${hours}:${minutes}:${seconds}`
+    },
+    isChange() {
+      if (JSON.stringify(this.countdownTimerSetting) != JSON.stringify(this.countdownTimerSettingOrigin)) {
+        document.getElementById('edit-countdown').show()
+        return true
+      } else {
+        if (document.getElementById('edit-countdown')) {
+          document.getElementById('edit-countdown').hide()
+        }
+        return false
       }
     }
-  }
+  },
+  methods: {
+    updateCountdown() {
+      const now = new Date()
+      const target = new Date(this.countdownTimerSetting.endTime)
+      const diff = Math.floor((target - now) / 1000)
+      this.timeLeft = diff > 0 ? diff : 0
+      if (diff <= 0 && this.intervalId) {
+        clearInterval(this.intervalId)
+        this.intervalId = null
+        this.$emit('finished')
+      }
+    },
+    saveCountdownSetting() {
+      axiosInApp.post('/coutdown/setting/save',{
+        countdownTimerSetting:this.countdownTimerSetting
+      })
+    },
+    discardCountdownSetting() {
+      this.countdownTimerSetting = {...this.countdownTimerSettingOrigin}
+    }
+  },
+  mounted() {
+    console.log(1);
+    this.updateCountdown()
+    this.intervalId = setInterval(this.updateCountdown, 1000)
+  },
+  unmounted() {
+    if (this.intervalId) clearInterval(this.intervalId)
+  },
 }
 </script>
 
@@ -65,6 +137,21 @@ export default {
   background-color: white;
   flex-direction: column;
   align-items: center;
+}
+
+.ct-title {
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 36px;
+  margin-bottom: 24px;
+}
+
+.ct-subtitle {
+  margin-bottom: 8px;
+}
+
+.ct-countdown {
+  font-size: 24px;
 }
 
 @media screen and (max-width: 768px) {
