@@ -1,13 +1,25 @@
+require("dotenv").config(); 
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const pool = require('./dabtabase/db');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.use(cors());
+
+// Route chính
+const shopifyRoutes = require("./routes/shopify/auth");
+app.use("/", shopifyRoutes);
+
+// Bắt lỗi không tìm thấy
+app.use((req, res) => {
+    res.status(404).send("Not Found");
+  });
+  
 
 // API to save countdown
 app.post('/countdown', async (req, res) => {
@@ -43,6 +55,6 @@ app.post('/coutdown/setting/save', async (req, res) => {
 });
 
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
