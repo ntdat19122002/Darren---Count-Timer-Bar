@@ -11,6 +11,7 @@
       </Card>
       <FooterButton
         :disabled="!isChange"
+        @save="saveCountdownSetting"
       />
     </div>
 

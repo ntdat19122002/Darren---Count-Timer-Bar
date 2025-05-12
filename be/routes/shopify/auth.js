@@ -1,9 +1,11 @@
-const { log } = require("console");
-const express = require("express");
+import express from "express";
+import crypto from "crypto";
+import axios from "axios";
+import querystring from "querystring";
+import {db} from '../../dabtabase/db.js'
+import { ShopifyStore } from "../../dabtabase/entity/ShopifyStore.js";
+
 const router = express.Router();
-const crypto = require("crypto");
-const axios = require("axios");
-const querystring = require("querystring");
 
 // Cấu hình từ biến môi trường
 const SHOPIFY_API_KEY = process.env.SHOPIFY_API_KEY;
@@ -20,8 +22,6 @@ const SCOPES = [
 ];
 
 router.get("/shopify/auth", (req, res) => {
-  console.log(1);
-  
   const shop = req.query.shop;
 
   if (!shop) {
@@ -33,7 +33,7 @@ router.get("/shopify/auth", (req, res) => {
     const redirectUri = `${BASE_URL}/shopify/finalize`;
 
     const permissionUrl = `https://${shop}/admin/oauth/authorize?` + querystring.stringify({
-      client_id: API_KEY,
+      client_id: SHOPIFY_API_KEY,
       scope: SCOPES.join(","),
       redirect_uri: redirectUri,
     });
@@ -68,6 +68,7 @@ router.get("/shopify/finalize", async (req, res) => {
     console.error("HMAC validation failed.");
     return res.status(400).send("HMAC validation failed.");
   }
+  console.log(req.query);
 
   try {
     // Exchange temporary code for permanent access token
@@ -78,7 +79,34 @@ router.get("/shopify/finalize", async (req, res) => {
     });
 
     const accessToken = tokenResponse.data.access_token;
-    console.log(2);
+    
+    const shopifyStoreRepository = db.getRepository(ShopifyStore)
+    const existingStore = await shopifyStoreRepository.findOne({
+      where: { store_url: shop },
+    });
+
+    let newShopifyStore = null    
+    if(!existingStore){
+      newShopifyStore = shopifyStoreRepository.create({
+        name: "My Awesome Shopify Store",
+        email: "contact@shop.com",
+        store_url: shop,
+        primary_domain: "myshop.com",
+        install_status: true,
+        timezone: "UTC",
+        shopify_access_token: accessToken,
+        shop_id: "shop123",
+        currency: "USD",
+        primary_locale: "en",
+        country: "US",
+        phone: "+123456789",
+      });
+    }else{
+
+    }
+
+    // Lưu bản ghi vào cơ sở dữ liệu
+    await shopifyStoreRepository.save(newShopifyStore);
     
     const redirectParams = new URLSearchParams(req.query).toString();
     res.redirect(`${FRONTEND_URL}`);
@@ -88,4 +116,4 @@ router.get("/shopify/finalize", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

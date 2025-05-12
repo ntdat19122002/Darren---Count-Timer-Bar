@@ -2,6 +2,7 @@
   "name": "be",
   "version": "1.0.0",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon app.js",
@@ -12,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@types/node": "^22.15.17",
     "axios": "^1.9.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
@@ -19,7 +21,10 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "pg": "^8.15.6",
-    "shopify-api-node": "^3.15.0"
+    "reflect-metadata": "^0.2.2",
+    "shopify-api-node": "^3.15.0",
+    "typeorm": "^0.3.23",
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
