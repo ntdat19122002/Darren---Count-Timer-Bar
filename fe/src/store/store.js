@@ -4,19 +4,19 @@ import {createStore} from 'vuex'
 const store = createStore({
     state() {
         return {
-            sessionToken: null,
+            appBridge: null,
             default_img_url: '/nesttiktokpixel/static/img/',
             page: 'Dashboard',
             pageParams: {}
         }
     },
     mutations: {
-        setSessionToken(state, token) {
-            state.sessionToken = token;
+        setAppBridge(state, appBridge) {
+            state.appBridge = appBridge;
         }
     },
     getters: {
-        getSessionToken: (state) => state.sessionToken
+        getAppBridge: (state) => state.appBridge
     }
 })
 

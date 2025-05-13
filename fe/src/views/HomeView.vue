@@ -48,14 +48,13 @@ export default {
   components: { Card, Header, DatePicker, FooterButton},
   data() {
     return {
+      countdownTimerName: 'Countdown 1',
       countdownTimerSetting: {
-        name: 'Countdown 1',
         title: '🔥Hurry up🔥',
         subtitle: 'Out of stock in:',
         endTime: ''
       },
       countdownTimerSettingOrigin: {
-        name: 'Countdown 1',
         title: '🔥Hurry up🔥',
         subtitle: 'Out of stock in:',
         endTime: ''
@@ -98,7 +97,8 @@ export default {
       }
     },
     saveCountdownSetting() {
-      axiosInApp.post('/coutdown/setting/save',{
+      axiosInApp.put('/countdowns',{
+        countdownTimerName: this.countdownTimerName,
         countdownTimerSetting:this.countdownTimerSetting
       })
     },
@@ -107,9 +107,9 @@ export default {
     }
   },
   mounted() {
-    console.log(1);
     this.updateCountdown()
     this.intervalId = setInterval(this.updateCountdown, 1000)
+    axiosInApp.get('/countdowns/9').then(res => console.log(res))
   },
   unmounted() {
     if (this.intervalId) clearInterval(this.intervalId)

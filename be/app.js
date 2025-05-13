@@ -22,26 +22,15 @@ db.initialize()
 
 // Route chính
 import shopifyRoutes from "./routes/shopify/auth.js";
+import countdownRoutes from './routes/countdowns.js'
+import verifySessionToken from './midlewares/sessionToken.js';
 app.use("/", shopifyRoutes);
+app.use("/countdowns",verifySessionToken, countdownRoutes)
 
 // Bắt lỗi không tìm thấy
 app.use((req, res) => {
     res.status(404).send("Not Found");
 });
-
-app.post('/coutdown/setting/save', async (req, res) => {
-    try {
-        const result = await pool.query(
-            'INSERT INTO countdown (title, target_time) VALUES ($1, $2) RETURNING *',
-            [title, target_time]
-        );
-        res.status(201).json(result.rows[0]);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);

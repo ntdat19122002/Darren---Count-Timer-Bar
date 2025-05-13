@@ -18,12 +18,5 @@ export const db = new DataSource({
   entities: [ShopifyStore,CountdownTimer], // Ensure User is registered properly
 });
 
-db.initialize()
-  .then(() => {
-    console.log("Data Source has been initialized!");
-  })
-  .catch((err) => {
-    console.error("Error during Data Source initialization", err);
-  });
-
-export default db;
+export const shopifyStoreRepository = db.getRepository(ShopifyStore)
+export const countdowntTimerRespository = db.getRepository(CountdownTimer)
