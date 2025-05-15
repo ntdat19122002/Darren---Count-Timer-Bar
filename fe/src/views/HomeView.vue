@@ -5,7 +5,6 @@
       <Card class="mb-16">
         <TextField class="mb-16" label="Countdown title" v-model="countdownTimerSetting.title" />
         <TextField class="mb-16" label="Subtitle" v-model="countdownTimerSetting.subtitle" />
-
         <div class="input-title mb-4">End time</div>
         <DatePicker show-time v-model:value="countdownTimerSetting.endTime"></DatePicker>
       </Card>
@@ -43,6 +42,7 @@ import Header from '../components/Header/Header.vue'
 import { Card } from '@ownego/polaris-vue';
 import FooterButton from '@/components/Button/FooterButton.vue';
 import axiosInApp from '@/axios';
+import dayjs from 'dayjs';
 
 export default {
   components: { Card, Header, DatePicker, FooterButton},
@@ -67,7 +67,7 @@ export default {
     formattedTime() {
       const total = Math.max(this.timeLeft, 0)
       const days = Math.floor(total / (3600 * 24))
-      const hours = String(Math.floor(total / (3600 * 24))).padStart(2, '0')
+      const hours = String(Math.floor((total % (3600 * 24)) / 3600)).padStart(2, '0')
       const minutes = String(Math.floor((total % 3600) / 60)).padStart(2, '0')
       const seconds = String(total % 60).padStart(2, '0')
       return `${days}d:${hours}:${minutes}:${seconds}`
@@ -100,6 +100,8 @@ export default {
       axiosInApp.put('/countdowns',{
         countdownTimerName: this.countdownTimerName,
         countdownTimerSetting:this.countdownTimerSetting
+      }).then(()=>{
+        this.countdownTimerSettingOrigin = {...this.countdownTimerSetting}
       })
     },
     discardCountdownSetting() {
@@ -109,7 +111,12 @@ export default {
   mounted() {
     this.updateCountdown()
     this.intervalId = setInterval(this.updateCountdown, 1000)
-    axiosInApp.get('/countdowns/9').then(res => console.log(res))
+    axiosInApp.get('/countdowns')
+      .then(res => {
+        this.countdownTimerSetting = JSON.parse(res.data.setting)
+        this.countdownTimerSetting.endTime = dayjs(this.countdownTimerSetting.endTime)
+        this.countdownTimerSettingOrigin = {...this.countdownTimerSetting}
+      })
   },
   unmounted() {
     if (this.intervalId) clearInterval(this.intervalId)

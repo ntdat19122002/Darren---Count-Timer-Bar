@@ -31,7 +31,7 @@ export const ShopifyStore = new EntitySchema({
       type: "varchar",
       nullable: true,
     },
-    shopify_access_token: {
+    access_token: {
       type: "varchar",
       nullable: true,
     },

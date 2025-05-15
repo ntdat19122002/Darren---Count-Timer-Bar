@@ -1,0 +1,22 @@
+<div class="dr-countdown-banner"></div>
+<script>
+  const ct_countdown_setting = {{ shop.metafields.countdown.settings }}
+  if (!document.getElementById('dr-countdown-script')) {
+    let script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.id = 'dr-countdown-script'
+    script.src = 'https://app.nestscale.com/nestprdvariant/static/js/shopify_frontend.js?v=20250304'
+    document.head.appendChild(script)
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Star Rating",
+  "target": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "product", "autofill": true },
+    { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
+  ]
+}
+{% endschema %}

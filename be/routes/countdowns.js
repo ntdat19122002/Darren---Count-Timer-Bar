@@ -4,11 +4,34 @@ import { getStoreByUrl } from "../services/shopifyStoreServiece.js";
 
 const router = express.Router();
 
+const saveMetafield = async ( store, data ) => {
+    const metafieldPayload = {
+      metafield: {
+        namespace: 'countdown',
+        key: 'settings',
+        type: 'json',
+        value: JSON.stringify(data),
+        owner_resource: 'shop'
+      }
+    };
+
+    const response = await fetch(`https://${store.store_url}/admin/api/2023-10/metafields.json`, {
+      method: 'POST',
+      headers: {
+        'X-Shopify-Access-Token': store.access_token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(metafieldPayload),
+    });
+  
+    const json = await response.json();
+    return json;
+  };
+
 router.get("/", async (req, res) => {
     const existingStore = getStoreByUrl(req.storeUrl);
     const existingCountdown = await countdowntTimerRespository.findOne({
         where: {
-            id: req.body.countdownTimerId,
             store: { id: existingStore.id }, // đảm bảo countdown thuộc store này
         },
         relations: ['store'], // cần nếu có ràng buộc quan hệ
@@ -47,16 +70,16 @@ router.post("/", async (req, res) => {
 
 router.put("/", async (req, res) => {
     try {
-        const existingStore = getStoreByUrl(req.storeUrl);
+        const existingStore = await getStoreByUrl(req.storeUrl);
         const existingCountdown = await countdowntTimerRespository.findOne({
             where: {
-                id: req.body.countdownTimerId,
                 store: { id: existingStore.id }, // đảm bảo countdown thuộc store này
             },
             relations: ['store'], // cần nếu có ràng buộc quan hệ
         });
         existingCountdown.setting = req.body.countdownTimerSetting || existingCountdown.setting;
         await countdowntTimerRespository.save(existingCountdown)
+        saveMetafield(existingStore, req.body.countdownTimerSetting)
         return res.json({ ok: req.shopifySession })
     } catch (error) {
         console.error(error.message);
