@@ -11,7 +11,6 @@ const router = express.Router();
 const SHOPIFY_API_KEY = process.env.SHOPIFY_API_KEY;
 const SHOPIFY_API_SECRET = process.env.SHOPIFY_API_SECRET;
 const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION || "2024-04";
-const FRONTEND_URL = process.env.FRONTEND_URL ;
 const BASE_URL = process.env.BASE_URL;
 
 // Phạm vi quyền cần thiết (scope)
@@ -21,7 +20,7 @@ const SCOPES = [
   "read_orders"
 ];
 
-router.get("/shopify/auth", (req, res) => {
+router.get("/auth", (req, res) => {
   const shop = req.query.shop;
 
   if (!shop) {
@@ -45,7 +44,7 @@ router.get("/shopify/auth", (req, res) => {
   }
 });
 
-router.get("/shopify/finalize", async (req, res) => {
+router.get("/finalize", async (req, res) => {
   const { shop, hmac, code, state } = req.query;
 
   if (!shop || !hmac || !code) {
@@ -109,7 +108,7 @@ router.get("/shopify/finalize", async (req, res) => {
     await shopifyStoreRepository.save(newShopifyStore);
     
     const redirectParams = new URLSearchParams(req.query).toString();
-    res.redirect(`${FRONTEND_URL}`);
+    res.redirect(`${BASE_URL}`);
   } catch (error) {
     console.error("OAuth finalize error:", error.message);
     return res.redirect("https://nestscale.com");

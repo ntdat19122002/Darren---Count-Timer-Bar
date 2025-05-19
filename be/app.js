@@ -24,8 +24,8 @@ db.initialize()
 import shopifyRoutes from "./routes/shopify/auth.js";
 import countdownRoutes from './routes/countdowns.js'
 import verifySessionToken from './midlewares/sessionToken.js';
-app.use("/", shopifyRoutes);
-app.use("/countdowns",verifySessionToken, countdownRoutes)
+app.use("/api/shopify", shopifyRoutes);
+app.use("/api/countdowns",verifySessionToken, countdownRoutes)
 
 // Bắt lỗi không tìm thấy
 app.use((req, res) => {

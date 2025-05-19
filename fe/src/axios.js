@@ -3,7 +3,7 @@ import store from './store/store';
 import { getSessionToken } from '@shopify/app-bridge-utils';
 
 const axiosInApp = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL:'/api' 
 });
 
 axiosInApp.interceptors.request.use(async function (config) {
