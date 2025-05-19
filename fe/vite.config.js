@@ -16,6 +16,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['rendan.website'],
+    allowedHosts: ['ctfe.darren.io.vn'],
   },
 })

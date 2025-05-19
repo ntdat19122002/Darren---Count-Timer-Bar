@@ -7,8 +7,9 @@ import { db } from './dabtabase/db.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
+
 
 // Ensure the DB is connected before starting the server
 db.initialize()
@@ -24,8 +25,8 @@ db.initialize()
 import shopifyRoutes from "./routes/shopify/auth.js";
 import countdownRoutes from './routes/countdowns.js'
 import verifySessionToken from './midlewares/sessionToken.js';
-app.use("/api/shopify", shopifyRoutes);
-app.use("/api/countdowns",verifySessionToken, countdownRoutes)
+app.use("/shopify", shopifyRoutes);
+app.use("/countdowns",verifySessionToken, countdownRoutes)
 
 // Bắt lỗi không tìm thấy
 app.use((req, res) => {
