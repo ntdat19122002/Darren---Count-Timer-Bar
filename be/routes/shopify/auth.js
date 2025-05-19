@@ -84,6 +84,8 @@ router.get("/finalize", async (req, res) => {
       where: { store_url: shop },
     });
 
+    console.log(shop);
+
     let newShopifyStore = null    
     if(!existingStore){
       newShopifyStore = shopifyStoreRepository.create({
