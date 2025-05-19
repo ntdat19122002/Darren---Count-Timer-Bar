@@ -12,6 +12,7 @@ const SHOPIFY_API_KEY = process.env.SHOPIFY_API_KEY;
 const SHOPIFY_API_SECRET = process.env.SHOPIFY_API_SECRET;
 const SHOPIFY_API_VERSION = process.env.SHOPIFY_API_VERSION || "2024-04";
 const BASE_URL = process.env.BASE_URL;
+const FE_URL = process.env.FE_URL
 
 // Phạm vi quyền cần thiết (scope)
 const SCOPES = [
@@ -67,7 +68,6 @@ router.get("/finalize", async (req, res) => {
     console.error("HMAC validation failed.");
     return res.status(400).send("HMAC validation failed.");
   }
-  console.log(req.query);
 
   try {
     // Exchange temporary code for permanent access token
@@ -84,33 +84,34 @@ router.get("/finalize", async (req, res) => {
       where: { store_url: shop },
     });
 
-    console.log(shop);
+    const shopResponse = await axios.get(`https://${shop}/admin/api/${SHOPIFY_API_VERSION}/shop.json`, {
+      headers: {
+        "X-Shopify-Access-Token": accessToken
+      }
+    });
+    const shopData = shopResponse.data.shop;
 
     let newShopifyStore = null    
     if(!existingStore){
       newShopifyStore = shopifyStoreRepository.create({
-        name: "My Awesome Shopify Store",
-        email: "contact@shop.com",
+        name: shopData.name,
+        email: shopData.email,
         store_url: shop,
-        primary_domain: "myshop.com",
+        primary_domain: shopData.primary_domain,
         install_status: true,
-        timezone: "UTC",
+        timezone: shopData.iana_timezone,
         shopify_access_token: accessToken,
-        shop_id: "shop123",
-        currency: "USD",
-        primary_locale: "en",
-        country: "US",
-        phone: "+123456789",
+        shop_id: shopData.id,
+        currency: shopData.currency,
+        primary_locale: shopData.primary_locale,
+        country: shopData.country,
+        phone: shopData.phone,
       });
-    }else{
-
+      await shopifyStoreRepository.save(newShopifyStore);
     }
-
-    // Lưu bản ghi vào cơ sở dữ liệu
-    await shopifyStoreRepository.save(newShopifyStore);
     
     const redirectParams = new URLSearchParams(req.query).toString();
-    res.redirect(`${BASE_URL}`);
+    res.redirect(`${FE_URL}`);
   } catch (error) {
     console.error("OAuth finalize error:", error.message);
     return res.redirect("https://nestscale.com");
