@@ -10,7 +10,7 @@ import store from "./store/store";
 
 const app = createApp(App)
 const appBridge = createAppBridge({
-    apiKey: 'e6bc08d6a25d4d9395aa0bcf6d4c617a',
+    apiKey: '2886ff10c28fa541be66db52b0a98deb',
     host: new URLSearchParams(location.search).get("host"),
     forceRedirect: true
 })
