@@ -112,7 +112,7 @@ router.get("/finalize", async (req, res) => {
     }
     
     const redirectParams = new URLSearchParams(req.query).toString();
-    res.redirect(`${FE_URL}`);
+    res.redirect(`${FE_URL}?${redirectParams}`);
   } catch (error) {
     console.error("OAuth finalize error:", error.message);
     return res.redirect("https://nestscale.com");

@@ -6,7 +6,6 @@ import router from './router'
 import PolarisVue from '@ownego/polaris-vue'
 import '@ownego/polaris-vue/dist/style.css'
 import {createApp as createAppBridge} from '@shopify/app-bridge'
-import { getSessionToken } from '@shopify/app-bridge-utils';
 import store from "./store/store";
 
 const app = createApp(App)
