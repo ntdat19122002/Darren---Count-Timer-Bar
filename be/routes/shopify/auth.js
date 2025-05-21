@@ -31,7 +31,8 @@ router.get("/auth", (req, res) => {
 
   try {
     const redirectUri = `${BASE_URL}/shopify/finalize`;
-
+    console.log(redirectUri);
+    
     const permissionUrl = `https://${shop}/admin/oauth/authorize?` + querystring.stringify({
       client_id: SHOPIFY_API_KEY,
       scope: SCOPES.join(","),
